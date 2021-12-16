@@ -1,6 +1,7 @@
 @isTest
 public class CreateQuoteTest {
     @isTest
+    //Valida que al buscar un codigo de producto no existente la respuesta sea falsa
     static void BuscarProductoT(){
         string codigoProducto = 'CL1010';
         
@@ -14,13 +15,13 @@ public class CreateQuoteTest {
         Id standardPBID = Test.getStandardPricebookId();
         
         PBE.Add(new PriceBookEntry( Product2Id = Pro.Id, 
-                                 UnitPrice = 100.0, IsActive = true, PriceBook2Id = standardPBID));
+                                UnitPrice = 100.0, IsActive = true, PriceBook2Id = standardPBID));
         
         try{
         insert PBE;
         }
         catch(DMLException e){
-             System.Debug(e.getMessage());
+            System.Debug(e.getMessage());
         }
         List<PriceBookEntry> PBECONSULTA = [SELECT Id, Name, Product2Id, Product2.Name, UnitPrice, Product2.ProductCode
                             FROM PriceBookEntry
@@ -33,10 +34,11 @@ public class CreateQuoteTest {
                                         FROM Inventario__c
                                         WHERE CodigoProd__c =: codigoProducto];
         CreatePartidaController con = new CreatePartidaController();
-       	system.assertEquals(false, CreatePartidaController.SearchProduct(codigoProducto).IsEmpty());
+    system.assertEquals(false, CreatePartidaController.SearchProduct(codigoProducto).IsEmpty());
     }
     
     @isTest
+    //Valida que se guarde la partida con el parámetro WrapperProductc esperado siendo true
     static void GuardarT(){
 		string codigoProducto = 'CL1010';
         
@@ -50,13 +52,13 @@ public class CreateQuoteTest {
         Id standardPBID = Test.getStandardPricebookId();
         
         PBE.Add(new PriceBookEntry( Product2Id = Pro.Id, 
-                                 UnitPrice = 100.0, IsActive = true, PriceBook2Id = standardPBID));
+                                UnitPrice = 100.0, IsActive = true, PriceBook2Id = standardPBID));
         
         try{
         insert PBE;
         }
         catch(DMLException e){
-             System.Debug(e.getMessage());
+            System.Debug(e.getMessage());
         }
         List<PriceBookEntry> PBECONSULTA = [SELECT Id, Name, Product2Id, Product2.Name, UnitPrice, Product2.ProductCode
                             FROM PriceBookEntry
@@ -68,16 +70,15 @@ public class CreateQuoteTest {
         Inventario__c InvC = [SELECT Cantidad_dis__c, CodigoProd__c 
                                         FROM Inventario__c
                                         WHERE CodigoProd__c =: codigoProducto];
-        
-         Opportunity testOpportunity = new Opportunity(Name='Opportunity Test',
-                                                     CloseDate=Date.newInstance(2021, 2, 17),
-                                                     StageName='Prospecting',
-                                                     Pricebook2Id=standardPBID);
+        Opportunity testOpportunity = new Opportunity(Name='Opportunity Test',
+                                                    CloseDate=Date.newInstance(2021, 2, 17),
+                                                    StageName='Prospecting',
+                                                    Pricebook2Id=standardPBID);
         insert testOpportunity;
         
         Quote testQuote = new Quote(Name='Test Quote',
-                                   OpportunityId=testOpportunity.Id,
-                                   Status='Draft');
+                                OpportunityId=testOpportunity.Id,
+                                Status='Draft');
         insert testQuote;
 		CreatePartidaController.WrapperProduct t= CreatePartidaController.SearchProduct(codigoProducto)[0];
         t.QuoteId = testQuote.Id;
@@ -99,6 +100,7 @@ public class CreateQuoteTest {
     }
     
     @isTest
+    //Al guardarse, valida que no se haya generado un mensaje de error, que esté vacío, false
     static void GuardarTT(){
 		string codigoProducto = 'CL1010';
         
@@ -112,7 +114,7 @@ public class CreateQuoteTest {
         Id standardPBID = Test.getStandardPricebookId();
         
         PBE.Add(new PriceBookEntry( Product2Id = Pro.Id, 
-                                 UnitPrice = 100.0, IsActive = true, PriceBook2Id = standardPBID));
+                                UnitPrice = 100.0, IsActive = true, PriceBook2Id = standardPBID));
         
         try{
         insert PBE;
@@ -132,14 +134,14 @@ public class CreateQuoteTest {
                                         WHERE CodigoProd__c =: codigoProducto];
         
         Opportunity testOpportunity = new Opportunity(Name='Opportunity Test',
-                                                     CloseDate=Date.newInstance(2021, 2, 17),
-                                                     StageName='Prospecting',
-                                                     Pricebook2Id=standardPBID);
+                                                    CloseDate=Date.newInstance(2021, 2, 17),
+                                                    StageName='Prospecting',
+                                                    Pricebook2Id=standardPBID);
         insert testOpportunity;
         
         Quote testQuote = new Quote(Name='Test Quote',
-                                   OpportunityId=testOpportunity.Id,
-                                   Status='Draft');
+                                OpportunityId=testOpportunity.Id,
+                                Status='Draft');
         insert testQuote;
 		CreatePartidaController.WrapperProduct t= CreatePartidaController.SearchProduct(codigoProducto)[0];
         

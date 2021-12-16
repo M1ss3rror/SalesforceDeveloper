@@ -3,7 +3,6 @@ public class InventarioBatch implements Database.Batchable<sObject>, Database.Al
     public List<Inventario__c> start(Database.BatchableContext BC){
         return ObtenerInventario.ObtenerInventarioAPI();
     }
-
     public void execute(Database.BatchableContext BC, List<Inventario__c> inventarios){
         try {
             upsert inventarios CodigoProd__c;
@@ -11,7 +10,6 @@ public class InventarioBatch implements Database.Batchable<sObject>, Database.Al
             System.debug(error.getMessage());
         }
     }
-
     public void finish(Database.BatchableContext BC){
         
     }

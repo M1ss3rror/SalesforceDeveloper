@@ -1,9 +1,8 @@
 public class ValidacionObjetoCotizacionHelper {
     
-     //Check Before (When the Quote is not inserted already, so we need to check de opportunity for the products)
+     //Comprobar la oportunida de los productos cuando aún no se ha creado la Quote
     public static void CheckObjects(List<Quote> inQuotes){
-        //Take the Quotes (Presupuestos), check if Status == 'Approved'.
-        //Compare the Quote's OpportunityID with the OpportunityLineItem's OpportunityID to find if a product exists.
+        //Comparar OpportunityID de la Quote con el OpportunityID del OpportunityLineItem para ver si existe un producto o no.
         for(Quote newQuote : inQuotes){  
             if(newQuote.Status == 'Aprobado'){
                 if([SELECT OpportunityId  FROM OpportunityLineItem WHERE OpportunityId =: newQuote.OpportunityId LIMIT 1].isEmpty()){
@@ -14,10 +13,8 @@ public class ValidacionObjetoCotizacionHelper {
         }
     }
     
-    //Check After
+    //Revisar si la Quote tiene estado aprobado y comparar con OpportunityID del OpportunityLineItem para ver si producto existe
     public static void CheckObjectsAfter(List<Quote> inQuotes){
-        //Take the Quotes (Presupuestos), check if Status == 'Approved'.
-        //Compare the Quote's OpportunityID with the OpportunityLineItem's OpportunityID to find if a product exists.
         for(Quote newQuote : inQuotes){  
             if(newQuote.Status == 'Aprobado'){
                 List<QuoteLineItem> LineItems = [SELECT QuoteId FROM QuoteLineItem WHERE QuoteId =: newQuote.Id];
@@ -29,35 +26,24 @@ public class ValidacionObjetoCotizacionHelper {
         }
     }
     
-    //Update Inventory
+    //Actualizar el inventario si existe y coincide con el CodigoProd__c, sisi, entonces restará la cantidad correspondiente del campo Cantidad_dis__c del inventario
     public static void DiscountOnInventory(List<Quote> inQuotes){
         //If not approved, do nothing
         if(inQuotes[0].Status == 'Aprobado'){
-            //Take QLIs, with them we search for a product that matches the CodigoProd__c
-            //If exists, substract the corresponding Cantidad_dis__c
-            
-            //Take QuoteIDs
             List<string> QuoteIDs = new List<string>();
             for(Quote newQuote : inQuotes){
                 QuoteIDs.add(newQuote.Id);
             }
-            
-            //Take QLIs Product Codes
-            //Take QLI based on QuoteID
             List<QuoteLineItem> QLIs = [SELECT QuoteId, Product2Id, Quantity FROM QuoteLineItem WHERE QuoteId IN: QuoteIDs];
             List<string> ProductIDs = new List<string>();
             for(QuoteLineItem LineItem : QLIs){
                 ProductIDs.add(LineItem.Product2Id);
             }
-            
-            //Take ProductCode based on QLI's productIDs
             List<Product2> Products = [SELECT Id, ProductCode FROM Product2 WHERE Id IN: ProductIDs];
             List<string> ProductCodes = new List<string>();
             for(Product2 Product: Products){
                 ProductCodes.add(Product.ProductCode);
             }
-            
-            //Only InvArticles that exist on our QLI
             List<Inventario__c> InvArticles = [SELECT CodigoProd__c, Cantidad_dis__c FROM Inventario__c WHERE CodigoProd__c IN: ProductCodes];
                 if(!InvArticles.IsEmpty()){
                     for(Inventario__c InvArticle : InvArticles){

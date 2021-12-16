@@ -5,11 +5,11 @@ public class ObtenerInventario {
         HttpRequest solicitud = new HttpRequest();
         solicitud.setEndpoint('https://64bjp0q5wg.execute-api.us-east-2.amazonaws.com/Implement/');
         solicitud.setMethod('GET');
+        //Inviar info obtenida a Salesforce
         HttpResponse respuesta = Link.send(solicitud);
         if(respuesta.getStatusCode() == 200){
-            // respuesta.getBody()--> trae el JSON
             InventarioModel inventwrapper = InventarioModel.parse(respuesta.getBody());
-            //fAqui esta la lista de inventarios
+            //Recorrer JSOn - Lista de Inventario
             for(InventarioModel.Inventory item : inventwrapper.Body.Inventory){
                 Inventario__c Inve = new Inventario__c();
                 Inve.CodigoProd__c = item.ProductID;

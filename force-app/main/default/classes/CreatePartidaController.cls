@@ -1,6 +1,5 @@
 public with sharing class CreatePartidaController {
-    // este método hace...
-    //OJITO: faltan las pruebas unitarias!!!! ;D
+    // este método busca el producto a traves del código proporcionado en el lwc
     @AuraEnabled(cacheable=true)
     public static List<wrapperProduct> SearchProduct(string searchText){
         // aquí hace falta el try catch
@@ -32,6 +31,7 @@ public with sharing class CreatePartidaController {
         return productos;
     }
     @AuraEnabled
+    //Guarda la partida y los detalles de los campos 
     public static boolean Save (wrapperProduct partida){
         Boolean response = false;
         try {

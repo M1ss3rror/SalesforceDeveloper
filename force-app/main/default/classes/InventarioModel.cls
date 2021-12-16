@@ -1,6 +1,7 @@
+//Clase creada a partir del JSon AWS
 public class InventarioModel {
-	 public Integer statusCode;
-     public Body body;
+	public Integer statusCode;
+    public Body body;
 
     public class Body {
         public List<Inventory> Inventory;

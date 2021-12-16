@@ -1,10 +1,10 @@
 trigger ValidacionObjetoCotizacion on Quote (before insert, before update, after update) {
 	if(trigger.IsBefore && trigger.IsInsert){
-        //There's no QLI, so that we check Opportunities
+        //No hay QuoteLineItem, se validan las Oportunidades
         ValidacionObjetoCotizacionHelper.CheckObjects(trigger.new);
     }
     if(trigger.IsBefore && trigger.IsUpdate){
-        //There IS a QLI, so we check QuoteLineItems
+        //Hay QuoteLineItem se valida el OpportunityLineItem
         ValidacionObjetoCotizacionHelper.CheckObjectsAfter(trigger.new);
     }
     if(trigger.IsAfter){
